@@ -2,7 +2,7 @@
 > so you thought that brianf*ck was esoteric.
 
 ## Introduction
-[Fractan][fractan] is a programming language
+[Fractan][fractan] is
 > a Turing-complete esoteric programming language invented by the mathematician John Conway. A FRACTRAN program is an ordered list of positive fractions together with an initial positive integer input n. The program is run by updating the integer n as follows:
 >
 > 1. for the first fraction f in the list for which nf is an integer, replace n by nf

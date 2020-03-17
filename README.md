@@ -1,7 +1,7 @@
 # Fractan
 > so you thought that brianf*ck was esoteric.
 
-This repository contains a talk that will be presented at [ScalaUA 2020][scalaua].
+This repository contains a [talk][] that will be presented at [ScalaUA 2020][scalaua].
 
 ## Introduction
 [Fractan][fractan] is
@@ -22,6 +22,7 @@ miniserve --port 3722 docs
 
 And go to [`http://localhost:3722/index.html`](http://localhost:3722/index.html).
 
+[talk]: http://fifth-postulate.nl/fractan/
 [scalaua]: https://www.scalaua.com/
 [fractan]: https://en.wikipedia.org/wiki/FRACTRAN
 [remark]: https://remarkjs.com/#1

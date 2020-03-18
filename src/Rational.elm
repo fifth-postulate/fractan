@@ -1,4 +1,4 @@
-module Rational exposing (Error, Fraction, add, divide, fraction, fromInt, multiply, one, subtract, view, zero)
+module Rational exposing (Error, Fraction, add, divide, fraction, fromInt, integer, multiply, one, subtract, view, zero)
 
 import Css exposing (..)
 import Gcd exposing (gcd)
@@ -59,6 +59,11 @@ safe_fraction p q =
     Fraction { numerator = numerator, denominator = denominator }
 
 
+integer : Fraction -> Bool
+integer (Fraction { denominator }) =
+    denominator == 1
+
+
 add : Fraction -> Fraction -> Fraction
 add (Fraction f) (Fraction g) =
     let
@@ -115,6 +120,6 @@ view : Fraction -> Html msg
 view (Fraction { numerator, denominator }) =
     Html.div [ Attribute.css [ display inlineFlex, flexDirection column, flexWrap noWrap, justifyContent center, alignItems center ] ]
         [ Html.span [] [ Html.text <| String.fromInt numerator ]
-        , Html.hr [Attribute.css [width (pct 100)]] []
+        , Html.hr [ Attribute.css [ width (pct 100) ] ] []
         , Html.span [] [ Html.text <| String.fromInt denominator ]
         ]

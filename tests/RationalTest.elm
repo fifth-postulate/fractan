@@ -97,5 +97,22 @@ suite =
                                 |> Result.withDefault Rational.one
                     in
                     Expect.equal quotient expected
+            , test "Fractions can be tested for integer" <|
+                \_ ->
+                    let
+                        f =
+                            fraction 1 2
+                                |> Result.withDefault Rational.zero
+
+                        g =
+                            fraction 2 4
+                                |> Result.withDefault Rational.zero
+
+                        isInteger =
+                            Rational.divide f g
+                                |> Result.map integer
+                                |> Result.withDefault False
+                    in
+                    Expect.true "fraction to be integer" isInteger
             ]
         ]

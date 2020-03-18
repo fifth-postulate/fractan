@@ -115,5 +115,6 @@ view : Fraction -> Html msg
 view (Fraction { numerator, denominator }) =
     Html.div [ Attribute.css [ display inlineFlex, flexDirection column, flexWrap noWrap, justifyContent center, alignItems center ] ]
         [ Html.span [] [ Html.text <| String.fromInt numerator ]
+        , Html.hr [Attribute.css [width (pct 100)]] []
         , Html.span [] [ Html.text <| String.fromInt denominator ]
         ]

@@ -1,4 +1,4 @@
-module Rational exposing (Error, Fraction, add, divide, fraction, fromInt, multiply, one, subtract, view, zero)
+module Rational exposing (Error, Fraction, add, divide, fraction, fromInt, gcd, multiply, one, sign, subtract, view, zero)
 
 import Css exposing (..)
 import Html.Styled as Html exposing (Html)
@@ -49,7 +49,7 @@ safe_fraction p q =
             gcd a b
 
         numerator =
-            s * a // d
+            s * (a // d)
 
         denominator =
             b // d
@@ -63,7 +63,7 @@ gcd a b =
         a
 
     else
-        gcd b <| modBy a b
+        gcd b <| modBy b a
 
 
 sign : Int -> Int

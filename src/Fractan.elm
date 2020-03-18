@@ -1,6 +1,9 @@
 module Fractan exposing (..)
 
-import Html
+import Css exposing (..)
+import Html as BasicHtml
+import Html.Styled as Html exposing (toUnstyled)
+import Html.Styled.Attributes as Attribute
 import Rational exposing (Fraction)
 
 
@@ -18,33 +21,39 @@ main =
             Rational.divide f g
                 |> Result.withDefault Rational.zero
     in
-    Html.div []
-        [ Html.div []
-            [ Rational.view f
-            , Html.span [] [ Html.text "/" ]
-            , Rational.view g
-            , Html.span [] [ Html.text "=" ]
-            , Rational.view h
+    toUnstyled <|
+        Html.div []
+            [ Html.div [ Attribute.css [ equation ] ]
+                [ Rational.view f
+                , Html.span [] [ Html.text "/" ]
+                , Rational.view g
+                , Html.span [] [ Html.text "=" ]
+                , Rational.view h
+                ]
+            , Html.div [ Attribute.css [ equation ] ]
+                [ Rational.view f
+                , Html.span [] [ Html.text "*" ]
+                , Rational.view g
+                , Html.span [] [ Html.text "=" ]
+                , Rational.view <| Rational.multiply f g
+                ]
+            , Html.div [ Attribute.css [ equation ] ]
+                [ Rational.view f
+                , Html.span [] [ Html.text "+" ]
+                , Rational.view g
+                , Html.span [] [ Html.text "=" ]
+                , Rational.view <| Rational.add f g
+                ]
+            , Html.div [ Attribute.css [ equation ] ]
+                [ Rational.view f
+                , Html.span [] [ Html.text "-" ]
+                , Rational.view g
+                , Html.span [] [ Html.text "=" ]
+                , Rational.view <| Rational.subtract f g
+                ]
             ]
-        , Html.div []
-            [ Rational.view f
-            , Html.span [] [ Html.text "*" ]
-            , Rational.view g
-            , Html.span [] [ Html.text "=" ]
-            , Rational.view <| Rational.multiply f g
-            ]
-        , Html.div []
-            [ Rational.view f
-            , Html.span [] [ Html.text "+" ]
-            , Rational.view g
-            , Html.span [] [ Html.text "=" ]
-            , Rational.view <| Rational.add f g
-            ]
-        , Html.div []
-            [ Rational.view f
-            , Html.span [] [ Html.text "-" ]
-            , Rational.view g
-            , Html.span [] [ Html.text "=" ]
-            , Rational.view <| Rational.subtract f g
-            ]
-        ]
+
+
+equation : Style
+equation =
+    batch [ displayFlex, flexDirection row, flexWrap noWrap, justifyContent flexStart, alignItems center ]

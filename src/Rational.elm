@@ -1,6 +1,8 @@
 module Rational exposing (Error, Fraction, add, divide, fraction, fromInt, multiply, one, subtract, view, zero)
 
-import Html exposing (Html)
+import Css exposing (..)
+import Html.Styled as Html exposing (Html)
+import Html.Styled.Attributes as Attribute
 
 
 type Fraction
@@ -131,7 +133,7 @@ type Error
 
 view : Fraction -> Html msg
 view (Fraction { numerator, denominator }) =
-    Html.div []
-        [ Html.div [] [ Html.text <| String.fromInt numerator ]
-        , Html.div [] [ Html.text <| String.fromInt denominator ]
+    Html.div [ Attribute.css [ display inlineFlex, flexDirection column, flexWrap noWrap, justifyContent center, alignItems center ] ]
+        [ Html.span [] [ Html.text <| String.fromInt numerator ]
+        , Html.span [] [ Html.text <| String.fromInt denominator ]
         ]

@@ -117,9 +117,30 @@ type Error
 
 
 view : Fraction -> Html msg
-view (Fraction { numerator, denominator }) =
-    Html.div [ Attribute.css [ display inlineFlex, flexDirection column, flexWrap noWrap, justifyContent center, alignItems center ] ]
+view f =
+    if integer f then
+        viewInteger f
+
+    else
+        viewFraction f
+
+
+viewFraction : Fraction -> Html msg
+viewFraction (Fraction { numerator, denominator }) =
+    Html.div [ Attribute.css [ fractionStyle ] ]
         [ Html.span [] [ Html.text <| String.fromInt numerator ]
         , Html.hr [ Attribute.css [ width (pct 100) ] ] []
         , Html.span [] [ Html.text <| String.fromInt denominator ]
         ]
+
+
+viewInteger : Fraction -> Html msg
+viewInteger (Fraction { numerator }) =
+    Html.div [ Attribute.css [ fractionStyle ] ]
+        [ Html.span [] [ Html.text <| String.fromInt numerator ]
+        ]
+
+
+fractionStyle : Style
+fractionStyle =
+    Css.batch [ display inlineFlex, flexDirection column, flexWrap noWrap, justifyContent center, alignItems center ]

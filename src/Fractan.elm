@@ -51,6 +51,13 @@ main =
                 , Html.span [] [ Html.text "=" ]
                 , Rational.view <| Rational.subtract f g
                 ]
+             , Html.div [ Attribute.css [ equation ] ]
+                [ Rational.view f
+                , Html.span [] [ Html.text "*" ]
+                , Rational.view <| Rational.fromInt 3
+                , Html.span [] [ Html.text "=" ]
+                , Rational.view <| Rational.multiply f (Rational.fromInt 3)
+                ]
             ]
 
 

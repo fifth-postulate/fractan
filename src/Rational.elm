@@ -1,8 +1,9 @@
-module Rational exposing (Error, Fraction, add, divide, fraction, fromInt, gcd, multiply, one, sign, subtract, view, zero)
+module Rational exposing (Error, Fraction, add, divide, fraction, fromInt, gcd, multiply, one, subtract, view, zero)
 
 import Css exposing (..)
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attribute
+import Sign exposing (sign)
 
 
 type Fraction
@@ -64,19 +65,6 @@ gcd a b =
 
     else
         gcd b <| modBy b a
-
-
-sign : Int -> Int
-sign n =
-    case compare n 0 of
-        LT ->
-            -1
-
-        EQ ->
-            0
-
-        GT ->
-            1
 
 
 add : Fraction -> Fraction -> Fraction

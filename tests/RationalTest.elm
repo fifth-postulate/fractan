@@ -9,12 +9,7 @@ import Test exposing (..)
 suite : Test
 suite =
     describe "Rational module"
-        [ describe "sign"
-            [ fuzz2 int int "product of signs is sign of products" <|
-                \a b ->
-                    Expect.equal (sign a * sign b) (sign (a * b))
-            ]
-        , describe "gcd"
+        [ describe "gcd"
             [ fuzz int "gcd of n and zero is n" <|
                 \n ->
                     Expect.equal (gcd n 0) n

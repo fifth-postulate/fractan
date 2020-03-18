@@ -6,6 +6,39 @@ import Html.Styled as Html exposing (toUnstyled)
 import Html.Styled.Attributes as Attribute
 import Rational exposing (Fraction)
 
+type Program =
+    Program { number: Int, fractions: List Fraction, finished : Bool }
+
+program : Int -> List Fraction -> Program
+program n fs =
+    Program { number = n, fractions = fs, finished = False }
+
+step : Program -> Program
+step ((Program ({ number, fractions, finished } as data)) as p) =
+    if finished then
+        p
+    else
+        let
+            multiplyWithNumber =
+                Rational.multiply <| Rational.fromInt number
+
+            unwrap =
+                Result.withDefault 0 
+
+            result = 
+                fractions
+                |> List.map multiplyWithNumber
+                |> List.filter Rational.integer
+                |> List.map Rational.toInt
+                |> List.map unwrap
+                |> List.head
+        in
+            case result of
+                Just nextNumber ->
+                    Program { data | number = nextNumber}
+
+                Nothing ->
+                    Program { data | finished = True }
 
 main =
     let

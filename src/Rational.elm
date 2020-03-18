@@ -1,4 +1,4 @@
-module Rational exposing (Error, Fraction, add, divide, fraction, fromInt, integer, multiply, one, subtract, view, zero)
+module Rational exposing (Error(..), Fraction, add, divide, fraction, fromInt, integer, multiply, one, subtract, toInt, view, zero)
 
 import Css exposing (..)
 import Gcd exposing (gcd)
@@ -24,6 +24,14 @@ zero =
 fromInt : Int -> Fraction
 fromInt n =
     Fraction { numerator = n, denominator = 1 }
+
+
+toInt : Fraction -> Result Error Int
+toInt (Fraction { numerator, denominator }) =
+    if denominator == 1 then
+        Ok numerator
+    else
+        Err NotAnInteger
 
 
 fraction : Int -> Int -> Result Error Fraction
@@ -114,6 +122,7 @@ divide (Fraction f) (Fraction g) =
 
 type Error
     = DivideByZero
+    | NotAnInteger
 
 
 view : Fraction -> Html msg

@@ -22,7 +22,7 @@ suite =
                 \n ->
                     Expect.equal (gcd n n) n
             , test "gcd of 51 and 37 is 1" <|
-                \_ -> 
+                \_ ->
                     Expect.equal (gcd 51 37) 1
             ]
         , describe "fractions"
@@ -55,7 +55,7 @@ suite =
                                 |> Result.withDefault Rational.one
                     in
                     Expect.equal sum expected
-             , test "Fractions can be subtracted" <|
+            , test "Fractions can be subtracted" <|
                 \_ ->
                     let
                         f =
@@ -106,12 +106,12 @@ suite =
 
                         quotient =
                             Rational.divide f g
-                            |> Result.withDefault Rational.zero
+                                |> Result.withDefault Rational.zero
 
                         expected =
                             fraction 3 4
                                 |> Result.withDefault Rational.one
                     in
                     Expect.equal quotient expected
-              ]
+            ]
         ]

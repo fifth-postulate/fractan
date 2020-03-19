@@ -1,8 +1,8 @@
 module FractanTest exposing (..)
 
 import Expect exposing (Expectation)
-import Fuzz exposing (Fuzzer, int)
 import Fractan exposing (..)
+import Fuzz exposing (Fuzzer, int)
 import Rational exposing (..)
 import Test exposing (..)
 
@@ -16,11 +16,11 @@ suite =
                     let
                         fractions =
                             [ fraction 1 2, fraction 1 3, fraction 1 5 ]
-                            |> List.map (Result.withDefault Rational.zero)
+                                |> List.map (Result.withDefault Rational.zero)
 
                         result =
                             program 30 fractions
-                            |> step
+                                |> step
 
                         expected =
                             program 15 fractions
@@ -31,12 +31,12 @@ suite =
                     let
                         fractions =
                             [ fraction 1 2, fraction 1 3, fraction 1 5 ]
-                            |> List.map (Result.withDefault Rational.zero)
+                                |> List.map (Result.withDefault Rational.zero)
 
                         result =
                             program 30 fractions
-                            |> step
-                            |> step
+                                |> step
+                                |> step
 
                         expected =
                             program 5 fractions

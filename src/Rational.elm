@@ -30,6 +30,7 @@ toInt : Fraction -> Result Error Int
 toInt (Fraction { numerator, denominator }) =
     if denominator == 1 then
         Ok numerator
+
     else
         Err NotAnInteger
 

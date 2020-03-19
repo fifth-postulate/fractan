@@ -6,39 +6,44 @@ import Html.Styled as Html exposing (toUnstyled)
 import Html.Styled.Attributes as Attribute
 import Rational exposing (Fraction)
 
-type Program =
-    Program { number: Int, fractions: List Fraction, finished : Bool }
+
+type Program
+    = Program { number : Int, fractions : List Fraction, finished : Bool }
+
 
 program : Int -> List Fraction -> Program
 program n fs =
     Program { number = n, fractions = fs, finished = False }
 
+
 step : Program -> Program
 step ((Program ({ number, fractions, finished } as data)) as p) =
     if finished then
         p
+
     else
         let
             multiplyWithNumber =
                 Rational.multiply <| Rational.fromInt number
 
             unwrap =
-                Result.withDefault 0 
+                Result.withDefault 0
 
-            result = 
+            result =
                 fractions
-                |> List.map multiplyWithNumber
-                |> List.filter Rational.integer
-                |> List.map Rational.toInt
-                |> List.map unwrap
-                |> List.head
+                    |> List.map multiplyWithNumber
+                    |> List.filter Rational.integer
+                    |> List.map Rational.toInt
+                    |> List.map unwrap
+                    |> List.head
         in
-            case result of
-                Just nextNumber ->
-                    Program { data | number = nextNumber}
+        case result of
+            Just nextNumber ->
+                Program { data | number = nextNumber }
 
-                Nothing ->
-                    Program { data | finished = True }
+            Nothing ->
+                Program { data | finished = True }
+
 
 main =
     let
@@ -84,7 +89,7 @@ main =
                 , Html.span [] [ Html.text "=" ]
                 , Rational.view <| Rational.subtract f g
                 ]
-             , Html.div [ Attribute.css [ equation ] ]
+            , Html.div [ Attribute.css [ equation ] ]
                 [ Rational.view f
                 , Html.span [] [ Html.text "*" ]
                 , Rational.view <| Rational.fromInt 3

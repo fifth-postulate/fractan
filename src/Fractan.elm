@@ -2,23 +2,64 @@ module Fractan exposing (..)
 
 import Css exposing (..)
 import Html as BasicHtml
-import Html.Styled as Html exposing (toUnstyled)
+import Html.Styled as Html exposing (Html, toUnstyled)
 import Html.Styled.Attributes as Attribute
-import Rational exposing (Fraction)
+import Rational exposing (Fraction, fraction)
+
+
+main =
+    let
+        fractions =
+            [ fraction 1 2, fraction 1 3, fraction 1 5 ]
+                |> List.map (Result.withDefault Rational.zero)
+
+        p =
+            program 30 fractions
+
+        e =
+            exploration p
+    in
+    toUnstyled <| view e
+
+
+type Exploration
+    = Exploration
+        { currentProgram : Program
+        , index : Maybe Int
+        , seen : List Int
+        }
+
+
+exploration : Program -> Exploration
+exploration p =
+    Exploration
+        { currentProgram = p
+        , index = Nothing
+        , seen = []
+        }
+
+
+microStep : Exploration -> Exploration
+microStep ((Exploration { currentProgram, index, seen }) as e) =
+    if finished currentProgram then
+        e
+
+    else
+        e
 
 
 type Program
-    = Program { number : Int, fractions : List Fraction, finished : Bool }
+    = Program { number : Int, fractions : List Fraction, isFinished : Bool }
 
 
 program : Int -> List Fraction -> Program
 program n fs =
-    Program { number = n, fractions = fs, finished = False }
+    Program { number = n, fractions = fs, isFinished = False }
 
 
 step : Program -> Program
-step ((Program ({ number, fractions, finished } as data)) as p) =
-    if finished then
+step ((Program ({ number, fractions, isFinished } as data)) as p) =
+    if finished p then
         p
 
     else
@@ -42,63 +83,33 @@ step ((Program ({ number, fractions, finished } as data)) as p) =
                 Program { data | number = nextNumber }
 
             Nothing ->
-                Program { data | finished = True }
+                Program { data | isFinished = True }
 
 
-main =
+finished : Program -> Bool
+finished (Program { isFinished }) =
+    isFinished
+
+
+view : Exploration -> Html msg
+view (Exploration { currentProgram, index, seen }) =
+    Html.div []
+        [ viewProgram currentProgram
+        ]
+
+
+viewProgram : Program -> Html msg
+viewProgram (Program { number, fractions }) =
     let
-        f =
-            Rational.fraction 2 3
-                |> Result.withDefault Rational.one
+        comma =
+            Html.span [] [ Html.text "," ]
 
-        g =
-            Rational.fraction 3 5
-                |> Result.withDefault Rational.one
-
-        h =
-            Rational.divide f g
-                |> Result.withDefault Rational.zero
+        fs =
+            fractions
+                |> List.map Rational.view
+                |> List.intersperse comma
     in
-    toUnstyled <|
-        Html.div []
-            [ Html.div [ Attribute.css [ equation ] ]
-                [ Rational.view f
-                , Html.span [] [ Html.text "/" ]
-                , Rational.view g
-                , Html.span [] [ Html.text "=" ]
-                , Rational.view h
-                ]
-            , Html.div [ Attribute.css [ equation ] ]
-                [ Rational.view f
-                , Html.span [] [ Html.text "*" ]
-                , Rational.view g
-                , Html.span [] [ Html.text "=" ]
-                , Rational.view <| Rational.multiply f g
-                ]
-            , Html.div [ Attribute.css [ equation ] ]
-                [ Rational.view f
-                , Html.span [] [ Html.text "+" ]
-                , Rational.view g
-                , Html.span [] [ Html.text "=" ]
-                , Rational.view <| Rational.add f g
-                ]
-            , Html.div [ Attribute.css [ equation ] ]
-                [ Rational.view f
-                , Html.span [] [ Html.text "-" ]
-                , Rational.view g
-                , Html.span [] [ Html.text "=" ]
-                , Rational.view <| Rational.subtract f g
-                ]
-            , Html.div [ Attribute.css [ equation ] ]
-                [ Rational.view f
-                , Html.span [] [ Html.text "*" ]
-                , Rational.view <| Rational.fromInt 3
-                , Html.span [] [ Html.text "=" ]
-                , Rational.view <| Rational.multiply f (Rational.fromInt 3)
-                ]
-            ]
-
-
-equation : Style
-equation =
-    batch [ displayFlex, flexDirection row, flexWrap noWrap, justifyContent flexStart, alignItems center ]
+    Html.div [ Attribute.css [ display inlineFlex, flexDirection row, flexWrap noWrap, justifyContent flexStart, alignItems center ] ]
+        [ Html.span [] [ Html.text <| String.fromInt number ]
+        , Html.div [ Attribute.css [ display inlineFlex, flexDirection row, flexWrap noWrap, justifyContent flexStart, alignItems center ] ] fs
+        ]

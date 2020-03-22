@@ -1,13 +1,24 @@
 module Fractan exposing (..)
 
+import Browser
 import Css exposing (..)
-import Html as BasicHtml
 import Html.Styled as Html exposing (Html, toUnstyled)
 import Html.Styled.Attributes as Attribute
+import Html.Styled.Events as Event
 import Rational exposing (Fraction, fraction)
 
 
 main =
+    Browser.element
+        { init = init
+        , view = toUnstyled << view
+        , update = update
+        , subscriptions = subscriptions
+        }
+
+
+init : () -> ( Model, Cmd Message )
+init _ =
     let
         fractions =
             [ fraction 1 2, fraction 1 3, fraction 1 5 ]
@@ -19,7 +30,11 @@ main =
         e =
             exploration p
     in
-    toUnstyled <| view e
+    ( e, Cmd.none )
+
+
+type alias Model =
+    Exploration
 
 
 type Exploration
@@ -35,43 +50,77 @@ exploration p =
     Exploration
         { currentProgram = p
         , index = Nothing
-        , seen = []
+        , seen = [ number p ]
         }
 
 
 microStep : Exploration -> Exploration
-microStep ((Exploration { currentProgram, index, seen }) as e) =
+microStep ((Exploration ({ currentProgram, index, seen } as data)) as e) =
     if finished currentProgram then
         e
 
     else
+        case index of
+            Nothing ->
+                Exploration { data | index = Just 0 }
+
+            Just i ->
+                case nthFraction i currentProgram of
+                    Nothing ->
+                        macroStep e
+
+                    Just f ->
+                        if Rational.integer <| Rational.multiply f <| Rational.fromInt <| number currentProgram then
+                            macroStep e
+
+                        else
+                            Exploration { data | index = Just <| i + 1 }
+
+
+macroStep : Exploration -> Exploration
+macroStep ((Exploration { currentProgram, seen }) as e) =
+    if finished currentProgram then
         e
+
+    else
+        let
+            nextProgram =
+                step currentProgram
+
+            nextSeen =
+                if finished nextProgram then
+                    seen
+
+                else
+                    number nextProgram :: seen
+        in
+        Exploration { currentProgram = nextProgram, index = Nothing, seen = nextSeen }
 
 
 type Program
-    = Program { number : Int, fractions : List Fraction, isFinished : Bool }
+    = Program { n : Int, fs : List Fraction, isFinished : Bool }
 
 
 program : Int -> List Fraction -> Program
 program n fs =
-    Program { number = n, fractions = fs, isFinished = False }
+    Program { n = n, fs = fs, isFinished = False }
 
 
 step : Program -> Program
-step ((Program ({ number, fractions, isFinished } as data)) as p) =
+step ((Program ({ n, fs } as data)) as p) =
     if finished p then
         p
 
     else
         let
             multiplyWithNumber =
-                Rational.multiply <| Rational.fromInt number
+                Rational.multiply <| Rational.fromInt n
 
             unwrap =
                 Result.withDefault 0
 
             result =
-                fractions
+                fs
                     |> List.map multiplyWithNumber
                     |> List.filter Rational.integer
                     |> List.map Rational.toInt
@@ -80,7 +129,7 @@ step ((Program ({ number, fractions, isFinished } as data)) as p) =
         in
         case result of
             Just nextNumber ->
-                Program { data | number = nextNumber }
+                Program { data | n = nextNumber }
 
             Nothing ->
                 Program { data | isFinished = True }
@@ -91,25 +140,102 @@ finished (Program { isFinished }) =
     isFinished
 
 
-view : Exploration -> Html msg
+number : Program -> Int
+number (Program { n }) =
+    n
+
+
+type Message
+    = MicroStep
+    | MacroStep
+
+
+update : Message -> Model -> ( Model, Cmd Message )
+update message model =
+    case message of
+        MicroStep ->
+            ( microStep model, Cmd.none )
+
+        MacroStep ->
+            ( macroStep model, Cmd.none )
+
+
+view : Exploration -> Html Message
 view (Exploration { currentProgram, index, seen }) =
     Html.div []
-        [ viewProgram currentProgram
+        [ viewControls
+        , viewProgram currentProgram
+        , viewIntermediate index currentProgram
+        , viewSeen seen
         ]
 
 
-viewProgram : Program -> Html msg
-viewProgram (Program { number, fractions }) =
+viewControls : Html Message
+viewControls =
+    Html.div []
+        [ Html.button [ Event.onClick MicroStep ] [ Html.text "." ]
+        , Html.button [ Event.onClick MacroStep ] [ Html.text ">" ]
+        ]
+
+
+viewIntermediate : Maybe Int -> Program -> Html msg
+viewIntermediate i p =
+    case (Maybe.andThen <| swap nthFraction p) i of
+        Nothing ->
+            Html.div [] []
+
+        Just f ->
+            Html.div []
+                [ Html.span [] [ Html.text <| String.fromInt <| number p ]
+                , Html.span [] [ Html.text <| "⨉" ]
+                , Rational.view f
+                , Html.span [] [ Html.text <| "=" ]
+                , Rational.view <| Rational.multiply f <| Rational.fromInt <| number p
+                ]
+
+
+swap : (a -> b -> c) -> (b -> a -> c)
+swap f =
+    \b a -> f a b
+
+
+nthFraction : Int -> Program -> Maybe Fraction
+nthFraction i (Program { fs }) =
+    fs
+        |> List.drop i
+        |> List.head
+
+
+viewProgram : Program -> Html Message
+viewProgram (Program { n, fs }) =
     let
         comma =
             Html.span [] [ Html.text "," ]
 
-        fs =
-            fractions
+        fractions =
+            fs
                 |> List.map Rational.view
                 |> List.intersperse comma
     in
     Html.div [ Attribute.css [ display inlineFlex, flexDirection row, flexWrap noWrap, justifyContent flexStart, alignItems center ] ]
-        [ Html.span [] [ Html.text <| String.fromInt number ]
-        , Html.div [ Attribute.css [ display inlineFlex, flexDirection row, flexWrap noWrap, justifyContent flexStart, alignItems center ] ] fs
+        [ Html.span [] [ Html.text <| String.fromInt n ]
+        , Html.div [ Attribute.css [ display inlineFlex, flexDirection row, flexWrap noWrap, justifyContent flexStart, alignItems center ] ] fractions
         ]
+
+
+viewSeen : List Int -> Html msg
+viewSeen ns =
+    let
+        viewNumber m =
+            Html.p [] [ Html.text <| String.fromInt m ]
+
+        numbers =
+            ns
+                |> List.map viewNumber
+    in
+    Html.div [] numbers
+
+
+subscriptions : Model -> Sub Message
+subscriptions _ =
+    Sub.none

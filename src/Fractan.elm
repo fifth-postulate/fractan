@@ -185,11 +185,11 @@ viewIntermediate i p =
             Html.div [] []
 
         Just f ->
-            Html.div []
+            Html.div [ Attribute.css [ displayFlex, flexDirection row, flexWrap noWrap, justifyContent flexStart, alignItems center ]]
                 [ Html.span [] [ Html.text <| String.fromInt <| number p ]
                 , Html.span [] [ Html.text <| "⨉" ]
                 , Rational.view f
-                , Html.span [] [ Html.text <| "=" ]
+                , Html.span [ Attribute.css [ marginLeft <| em 0.5, marginRight <| em 0.5]] [ Html.text <| "=" ]
                 , Rational.view <| Rational.multiply f <| Rational.fromInt <| number p
                 ]
 
@@ -226,12 +226,15 @@ viewProgram (Program { n, fs }) =
 viewSeen : List Int -> Html msg
 viewSeen ns =
     let
+        comma =
+            Html.span [] [ Html.text "," ]
         viewNumber m =
-            Html.p [] [ Html.text <| String.fromInt m ]
+            Html.span [] [ Html.text <| String.fromInt m ]
 
         numbers =
             ns
                 |> List.map viewNumber
+                |> List.intersperse comma
     in
     Html.div [] numbers
 

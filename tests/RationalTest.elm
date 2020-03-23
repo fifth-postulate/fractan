@@ -2,6 +2,7 @@ module RationalTest exposing (..)
 
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
+import Json.Decode as Decode
 import Rational exposing (..)
 import Test exposing (..)
 
@@ -114,5 +115,29 @@ suite =
                                 |> Result.withDefault False
                     in
                     Expect.true "fraction to be integer" isInteger
+            , test "Fractions can be parsed" <|
+                \_ ->
+                    let
+                        result =
+                            parse "1/3"
+
+                        expected =
+                            fraction 1 3
+                    in
+                    Expect.equal result expected
+            , test "Fractions can be decoded" <|
+                \_ ->
+                    let
+                        decoder =
+                            Decode.field "fraction" decode
+
+                        result =
+                            Decode.decodeString decoder """{"fraction":"1/2"}"""
+                                |> Result.mapError (\_ -> Rational.NotAnFraction)
+
+                        expected =
+                            fraction 1 2
+                    in
+                    Expect.equal result expected
             ]
         ]

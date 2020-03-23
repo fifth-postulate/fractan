@@ -5180,21 +5180,16 @@ var $elm$core$Task$perform = F2(
 			A2($elm$core$Task$map, toMessage, task));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$Fractan$Exploration = $elm$core$Basics$identity;
-var $author$project$Fractan$number = function (_v0) {
-	var n = _v0.aG;
-	return n;
-};
-var $author$project$Fractan$exploration = function (p) {
-	return {
-		aB: p,
-		al: $elm$core$Maybe$Nothing,
-		aM: _List_fromArray(
-			[
-				$author$project$Fractan$number(p)
-			])
-	};
-};
+var $elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
+	});
+var $author$project$Rational$DenominatorNotAnInt = 6;
+var $author$project$Rational$NumeratorNotAnInt = 5;
+var $author$project$Rational$PartsNotAnInt = 4;
+var $author$project$Rational$ToFewParts = 2;
+var $author$project$Rational$ToManyParts = 3;
 var $author$project$Rational$DivideByZero = 0;
 var $elm$core$Basics$neq = _Utils_notEqual;
 var $author$project$Rational$Fraction = $elm$core$Basics$identity;
@@ -5239,13 +5234,55 @@ var $author$project$Rational$fraction = F2(
 		return (!(!denominator)) ? $elm$core$Result$Ok(
 			A2($author$project$Rational$safe_fraction, numerator, denominator)) : $elm$core$Result$Err(0);
 	});
-var $elm$core$Platform$Cmd$batch = _Platform_batch;
-var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
-var $author$project$Fractan$Program = $elm$core$Basics$identity;
-var $author$project$Fractan$program = F2(
-	function (n, fs) {
-		return {aX: fs, be: false, aG: n};
-	});
+var $author$project$Rational$toFraction = function (input) {
+	_v0$5:
+	while (true) {
+		if (input.b) {
+			if (!input.b.b) {
+				return $elm$core$Result$Err(2);
+			} else {
+				if (!input.b.b.b) {
+					if (!input.a.$) {
+						if (!input.b.a.$) {
+							var n = input.a.a;
+							var _v1 = input.b;
+							var d = _v1.a.a;
+							return A2($author$project$Rational$fraction, n, d);
+						} else {
+							var _v7 = input.b;
+							var _v8 = _v7.a;
+							return $elm$core$Result$Err(6);
+						}
+					} else {
+						if (input.b.a.$ === 1) {
+							var _v2 = input.a;
+							var _v3 = input.b;
+							var _v4 = _v3.a;
+							return $elm$core$Result$Err(4);
+						} else {
+							var _v5 = input.a;
+							var _v6 = input.b;
+							return $elm$core$Result$Err(5);
+						}
+					}
+				} else {
+					break _v0$5;
+				}
+			}
+		} else {
+			break _v0$5;
+		}
+	}
+	return $elm$core$Result$Err(3);
+};
+var $author$project$Rational$parse = function (input) {
+	return $author$project$Rational$toFraction(
+		A2(
+			$elm$core$List$map,
+			$elm$core$String$toInt,
+			A2($elm$core$String$split, '/', input)));
+};
+var $elm$json$Json$Decode$string = _Json_decodeString;
 var $elm$core$Result$withDefault = F2(
 	function (def, result) {
 		if (!result.$) {
@@ -5259,18 +5296,65 @@ var $author$project$Rational$fromInt = function (n) {
 	return {k: 1, r: n};
 };
 var $author$project$Rational$zero = $author$project$Rational$fromInt(0);
-var $author$project$Fractan$init = function (_v0) {
+var $author$project$Rational$decode = A2(
+	$elm$json$Json$Decode$map,
+	A2(
+		$elm$core$Basics$composeR,
+		$author$project$Rational$parse,
+		$elm$core$Result$withDefault($author$project$Rational$zero)),
+	$elm$json$Json$Decode$string);
+var $elm$json$Json$Decode$field = _Json_decodeField;
+var $elm$json$Json$Decode$int = _Json_decodeInt;
+var $elm$json$Json$Decode$list = _Json_decodeList;
+var $author$project$Fractan$Program = $elm$core$Basics$identity;
+var $author$project$Fractan$program = F2(
+	function (n, fs) {
+		return {aX: fs, be: false, aG: n};
+	});
+var $author$project$Fractan$decodeProgram = A3(
+	$elm$json$Json$Decode$map2,
+	$author$project$Fractan$program,
+	A2($elm$json$Json$Decode$field, 'number', $elm$json$Json$Decode$int),
+	A2(
+		$elm$json$Json$Decode$field,
+		'fractions',
+		$elm$json$Json$Decode$list($author$project$Rational$decode)));
+var $author$project$Fractan$Exploration = $elm$core$Basics$identity;
+var $author$project$Fractan$number = function (_v0) {
+	var n = _v0.aG;
+	return n;
+};
+var $author$project$Fractan$exploration = function (p) {
+	return {
+		aB: p,
+		al: $elm$core$Maybe$Nothing,
+		aM: _List_fromArray(
+			[
+				$author$project$Fractan$number(p)
+			])
+	};
+};
+var $author$project$Fractan$decode = A2(
+	$elm$json$Json$Decode$map,
+	$author$project$Fractan$exploration,
+	A2($elm$json$Json$Decode$field, 'description', $author$project$Fractan$decodeProgram));
+var $elm$json$Json$Decode$decodeValue = _Json_run;
+var $elm$core$Platform$Cmd$batch = _Platform_batch;
+var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+var $author$project$Fractan$init = function (flags) {
 	var fractions = A2(
 		$elm$core$List$map,
 		$elm$core$Result$withDefault($author$project$Rational$zero),
 		_List_fromArray(
 			[
-				A2($author$project$Rational$fraction, 1, 2),
-				A2($author$project$Rational$fraction, 1, 3),
-				A2($author$project$Rational$fraction, 1, 5)
+				A2($author$project$Rational$fraction, 1, 2)
 			]));
-	var p = A2($author$project$Fractan$program, 30, fractions);
-	var e = $author$project$Fractan$exploration(p);
+	var p = A2($author$project$Fractan$program, 2, fractions);
+	var _default = $author$project$Fractan$exploration(p);
+	var e = A2(
+		$elm$core$Result$withDefault,
+		_default,
+		A2($elm$json$Json$Decode$decodeValue, $author$project$Fractan$decode, flags));
 	return _Utils_Tuple2(e, $elm$core$Platform$Cmd$none);
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -7731,6 +7815,7 @@ var $author$project$Fractan$update = F2(
 				$elm$core$Platform$Cmd$none);
 		}
 	});
+var $elm$json$Json$Decode$value = _Json_decodeValue;
 var $rtfeldman$elm_css$VirtualDom$Styled$Node = F3(
 	function (a, b, c) {
 		return {$: 0, a: a, b: b, c: c};
@@ -8255,5 +8340,4 @@ var $author$project$Fractan$main = $elm$browser$Browser$element(
 		c9: $author$project$Fractan$update,
 		db: A2($elm$core$Basics$composeL, $rtfeldman$elm_css$Html$Styled$toUnstyled, $author$project$Fractan$view)
 	});
-_Platform_export({'Fractan':{'init':$author$project$Fractan$main(
-	$elm$json$Json$Decode$succeed(0))(0)}});}(this));
+_Platform_export({'Fractan':{'init':$author$project$Fractan$main($elm$json$Json$Decode$value)(0)}});}(this));

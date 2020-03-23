@@ -8,7 +8,7 @@
     samples.forEach(function(sample){
       let source = sample.getElementsByTagName('p')[0].innerText;
       let description = JSON.parse(source);
-      let flags = { desciption: description };
+      let flags = { description: description };
       let app = Elm.Fractan.init({
         node: sample,
         flags: flags

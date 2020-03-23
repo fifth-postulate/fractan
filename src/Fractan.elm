@@ -5,6 +5,7 @@ import Css exposing (..)
 import Html.Styled as Html exposing (Html, toUnstyled)
 import Html.Styled.Attributes as Attribute
 import Html.Styled.Events as Event
+import Json.Decode as Decode exposing (Decoder, Value)
 import Rational exposing (Fraction, fraction)
 
 
@@ -17,20 +18,29 @@ main =
         }
 
 
-init : () -> ( Model, Cmd Message )
-init _ =
+init : Flags -> ( Model, Cmd Message )
+init flags =
     let
         fractions =
-            [ fraction 1 2, fraction 1 3, fraction 1 5 ]
+            [ fraction 1 2 ]
                 |> List.map (Result.withDefault Rational.zero)
 
         p =
-            program 30 fractions
+            program 2 fractions
+
+        default =
+            exploration p
 
         e =
-            exploration p
+            flags
+                |> Decode.decodeValue decode
+                |> Result.withDefault default
     in
     ( e, Cmd.none )
+
+
+type alias Flags =
+    Value
 
 
 type alias Model =
@@ -185,11 +195,11 @@ viewIntermediate i p =
             Html.div [] []
 
         Just f ->
-            Html.div [ Attribute.css [ displayFlex, flexDirection row, flexWrap noWrap, justifyContent flexStart, alignItems center ]]
+            Html.div [ Attribute.css [ displayFlex, flexDirection row, flexWrap noWrap, justifyContent flexStart, alignItems center ] ]
                 [ Html.span [] [ Html.text <| String.fromInt <| number p ]
                 , Html.span [] [ Html.text <| "⨉" ]
                 , Rational.view f
-                , Html.span [ Attribute.css [ marginLeft <| em 0.5, marginRight <| em 0.5]] [ Html.text <| "=" ]
+                , Html.span [ Attribute.css [ marginLeft <| em 0.5, marginRight <| em 0.5 ] ] [ Html.text <| "=" ]
                 , Rational.view <| Rational.multiply f <| Rational.fromInt <| number p
                 ]
 
@@ -228,6 +238,7 @@ viewSeen ns =
     let
         comma =
             Html.span [] [ Html.text "," ]
+
         viewNumber m =
             Html.span [] [ Html.text <| String.fromInt m ]
 
@@ -242,3 +253,16 @@ viewSeen ns =
 subscriptions : Model -> Sub Message
 subscriptions _ =
     Sub.none
+
+
+decode : Decoder Exploration
+decode =
+    Decode.map exploration
+        (Decode.field "description" decodeProgram)
+
+
+decodeProgram : Decoder Program
+decodeProgram =
+    Decode.map2 program
+        (Decode.field "number" Decode.int)
+        (Decode.field "fractions" <| Decode.list Rational.decode)

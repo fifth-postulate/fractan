@@ -1,9 +1,10 @@
-module Rational exposing (Error(..), Fraction, add, divide, fraction, fromInt, integer, multiply, one, subtract, toInt, view, zero)
+module Rational exposing (Error(..), Fraction, add, decode, divide, fraction, fromInt, integer, multiply, one, parse, subtract, toInt, view, zero)
 
 import Css exposing (..)
 import Gcd exposing (gcd)
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attribute
+import Json.Decode as Decode exposing (Decoder)
 import Sign exposing (sign)
 
 
@@ -124,6 +125,12 @@ divide (Fraction f) (Fraction g) =
 type Error
     = DivideByZero
     | NotAnInteger
+    | ToFewParts
+    | ToManyParts
+    | PartsNotAnInt
+    | NumeratorNotAnInt
+    | DenominatorNotAnInt
+    | NotAnFraction
 
 
 view : Fraction -> Html msg
@@ -154,3 +161,39 @@ viewInteger (Fraction { numerator }) =
 fractionStyle : Style
 fractionStyle =
     Css.batch [ display inlineFlex, flexDirection column, flexWrap noWrap, justifyContent center, alignItems center ]
+
+
+decode : Decoder Fraction
+decode =
+    Decode.map (parse >> Result.withDefault zero)
+        Decode.string
+
+
+parse : String -> Result Error Fraction
+parse input =
+    input
+        |> String.split "/"
+        |> List.map String.toInt
+        |> toFraction
+
+
+toFraction : List (Maybe Int) -> Result Error Fraction
+toFraction input =
+    case input of
+        [ Just n, Just d ] ->
+            fraction n d
+
+        [ _ ] ->
+            Err ToFewParts
+
+        [ Nothing, Nothing ] ->
+            Err PartsNotAnInt
+
+        [ Nothing, _ ] ->
+            Err NumeratorNotAnInt
+
+        [ _, Nothing ] ->
+            Err DenominatorNotAnInt
+
+        _ ->
+            Err ToManyParts

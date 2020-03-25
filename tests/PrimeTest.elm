@@ -14,7 +14,7 @@ suite =
                 \n ->
                     Expect.equal n (List.product <| factors n)
             , describe "parametric test" <|
-                makeTests
+                makeFactorsTests
                     [ ( 1, [ 1 ] )
                     , ( 2, [ 2 ] )
                     , ( 3, [ 3 ] )
@@ -26,15 +26,50 @@ suite =
                     , ( 9, [ 3, 3 ] )
                     ]
             ]
+        , describe "collect"
+            [ describe "parametric test" <|
+                makeCollectTests
+                    [ ( [], [] )
+                    , ( [ 2 ], [ ( 2, 1 ) ] )
+                    , ( [ 2, 2 ], [ ( 2, 2 ) ] )
+                    , ( [ 2, 2, 2 ], [ ( 2, 3 ) ] )
+                    , ( [ 2, 3 ], [ ( 2, 1 ), ( 3, 1 ) ] )
+                    , ( [ 2, 2, 3 ], [ ( 2, 2 ), ( 3, 1 ) ] )
+                    , ( [ 2, 2, 2, 3 ], [ ( 2, 3 ), ( 3, 1 ) ] )
+                    , ( [ 2, 3, 3 ], [ ( 2, 1 ), ( 3, 2 ) ] )
+                    , ( [ 2, 2, 3, 3 ], [ ( 2, 2 ), ( 3, 2 ) ] )
+                    , ( [ 2, 2, 2, 3, 3 ], [ ( 2, 3 ), ( 3, 2 ) ] )
+                    ]
+            ]
         ]
 
 
-makeTests : List ( Int, List Int ) -> List Test
-makeTests =
-    List.map makeTest
+makeFactorsTests : List ( Int, List Int ) -> List Test
+makeFactorsTests =
+    List.map makeFactorsTest
 
 
-makeTest : ( Int, List Int ) -> Test
-makeTest ( n, expected ) =
+makeFactorsTest : ( Int, List Int ) -> Test
+makeFactorsTest ( n, expected ) =
     test ("factors of " ++ String.fromInt n) <|
         \_ -> Expect.equal expected <| factors n
+
+
+makeCollectTests : List ( List Int, List ( Int, Int ) ) -> List Test
+makeCollectTests =
+    List.map makeCollectTest
+
+
+makeCollectTest : ( List Int, List ( Int, Int ) ) -> Test
+makeCollectTest ( input, expected ) =
+    let
+        content =
+            input
+                |> List.map String.fromInt
+                |> String.join ","
+
+        testName =
+            "[" ++ content ++ "]"
+    in
+    test ("collect of " ++ testName) <|
+        \_ -> Expect.equal expected <| collect input

@@ -1,4 +1,4 @@
-module Prime exposing (factors)
+module Prime exposing (collect, factors)
 
 import Browser
 import Css exposing (..)
@@ -21,9 +21,10 @@ type alias Flags =
 type alias Model =
     Int
 
-init: Flags -> (Model, Cmd Message)
+
+init : Flags -> ( Model, Cmd Message )
 init flags =
-    (flags, Cmd.none)
+    ( flags, Cmd.none )
 
 
 type Message
@@ -39,7 +40,8 @@ view : Model -> Html Message
 view model =
     let
         times =
-            Html.span [] [ Html.text "⨉"]
+            Html.span [] [ Html.text "⨉" ]
+
         content =
             model
                 |> factors
@@ -70,6 +72,28 @@ factorsFrom acc d n =
 
     else
         factorsFrom acc (d + 1) n
+
+
+collect : List Int -> List ( Int, Int )
+collect =
+    collectIn []
+
+
+collectIn : List ( Int, Int ) -> List Int -> List ( Int, Int )
+collectIn accumulator ns =
+    case ( accumulator, ns ) of
+        ( any, [] ) ->
+            List.reverse any
+
+        ( [], x :: xs ) ->
+            collectIn [ ( x, 1 ) ] xs
+
+        ( (( y, d ) as p) :: ps, x :: xs ) ->
+            if x == y then
+                collectIn (( x, d + 1 ) :: ps) xs
+
+            else
+                collectIn (( x, 1 ) :: p :: ps) xs
 
 
 subscriptions : Model -> Sub msg

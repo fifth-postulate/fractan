@@ -3,16 +3,13 @@
     sourceUrl: 'presentation.md'
   });
   slideshow.on('showSlide', once(function(){
-    let samples = Array.prototype.slice.call(document.getElementsByTagName('div'))
-      .filter(function(sample){ return sample.classList.contains('fractan')});
-    samples.forEach(function(sample){
-      let source = sample.getElementsByTagName('p')[0].innerText;
-      let description = JSON.parse(source);
-      let flags = { description: description };
-      let app = Elm.Fractan.init({
-        node: sample,
-        flags: flags
-      });
+    turn('fractan').into(function(container, source){
+          let description = JSON.parse(source);
+          let flags = { description: description };
+          let app = Elm.Fractan.init({
+            node: container,
+            flags: flags
+          });
     });
   }));
 
@@ -22,6 +19,19 @@
       if (!called) {
         called = true;
         callback();
+      }
+    }
+  }
+
+  function turn(className){
+    return {
+      into: function(callback){
+        let samples = Array.prototype.slice.call(document.getElementsByTagName('div'))
+          .filter(function(sample){ return sample.classList.contains(className)});
+        samples.forEach(function(sample){
+          let source = sample.getElementsByTagName('p')[0].innerText;
+          callback(sample, source);
+       });
       }
     }
   }

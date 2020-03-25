@@ -3,6 +3,7 @@ class: middle, center
 # Fractan
 
 ---
+class: middle, center
 
 .fractan[{
     "number": 2,
@@ -23,3 +24,36 @@ class: middle, center
         "55/1"
    ]
 }]
+
+---
+
+## John H Conway
+
+---
+
+## The Pragmatic Programmer
+
+---
+
+## Tip 8
+
+> Invest Regularly in Your Knowledge Portfolio
+
+???
+
+Total of 70 tips
+
+## Goals
+* Learn at least one new language every year.
+
+> The process of learning will expand your thinking, opening you to new possibilities and new ways of doing things
+
+---
+class: middle, center
+
+3435
+
+---
+class: middle, center
+
+.factors[3435]

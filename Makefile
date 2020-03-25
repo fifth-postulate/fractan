@@ -2,9 +2,10 @@
 
 SOURCE_DIR=src
 BUILD_DIR=docs/js
-MINIFIED_TARGET=${BUILD_DIR}/Fractan.min.js
+MODULI=Fractan Prime
+MINIFIED_TARGETS=$(MODULI:%=${BUILD_DIR}/%.min.js)
 
-all: ${MINIFIED_TARGET}
+all: ${MINIFIED_TARGETS}
 	@echo "finished"
 
 ${BUILD_DIR}/%.min.js: ${BUILD_DIR}/%.js

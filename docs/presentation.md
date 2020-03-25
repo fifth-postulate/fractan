@@ -56,4 +56,6 @@ class: middle, center
 ---
 class: middle, center
 
-.factors[3435]
+.factors[
+    3435
+]

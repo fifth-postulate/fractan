@@ -4,12 +4,20 @@
   });
   slideshow.on('showSlide', once(function(){
     turn('fractan').into(function(container, source){
-          let description = JSON.parse(source);
-          let flags = { description: description };
-          let app = Elm.Fractan.init({
-            node: container,
-            flags: flags
-          });
+      let description = JSON.parse(source);
+      let flags = { description: description };
+      let app = Elm.Fractan.init({
+        node: container,
+        flags: flags
+      });
+    });
+
+    turn('factors').into(function(container, source){
+      let flags = parseInt(source);
+      let app = Elm.Prime.init({
+        node: container,
+        flags: flags
+      });
     });
   }));
 

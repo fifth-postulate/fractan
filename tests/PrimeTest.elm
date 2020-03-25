@@ -11,21 +11,20 @@ suite =
     describe "Prime module"
         [ describe "factors"
             [ fuzz (intRange 2 10000) "factors of n and multiply to is n" <|
-                 \n ->
-                     Expect.equal n (List.product <| factors n)
-              
+                \n ->
+                    Expect.equal n (List.product <| factors n)
             , describe "parametric test" <|
-                    makeTests
-                        [ ( 1, [ 1 ] )
-                        , ( 2, [ 2 ] )
-                        , ( 3, [ 3 ] )
-                        , ( 4, [ 2, 2 ] )
-                        , ( 5, [ 5 ] )
-                        , ( 6, [ 2, 3 ] )
-                        , ( 7, [ 7 ] )
-                        , ( 8, [ 2, 2, 2 ] )
-                        , ( 9, [ 3, 3 ] )
-                        ]
+                makeTests
+                    [ ( 1, [ 1 ] )
+                    , ( 2, [ 2 ] )
+                    , ( 3, [ 3 ] )
+                    , ( 4, [ 2, 2 ] )
+                    , ( 5, [ 5 ] )
+                    , ( 6, [ 2, 3 ] )
+                    , ( 7, [ 7 ] )
+                    , ( 8, [ 2, 2, 2 ] )
+                    , ( 9, [ 3, 3 ] )
+                    ]
             ]
         ]
 

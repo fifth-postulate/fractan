@@ -59,3 +59,27 @@ class: middle, center
 .factors[
     3435
 ]
+
+---
+class: middle, center
+
+60
+
+---
+class: middle, center
+
+.factors[
+    60
+]
+
+---
+class: middle, center
+
+2, 3, 5, 7, 11, 13, 17, 19, ...
+
+---
+class: middle, center
+
+.sieve[
+    50
+]

@@ -6,6 +6,7 @@ import Html.Styled as Html exposing (Html, toUnstyled)
 import Html.Styled.Attributes as Attribute
 import Html.Styled.Events as Event
 import Json.Decode as Decode exposing (Decoder, Value)
+import Prime
 import Rational exposing (Fraction, fraction)
 
 
@@ -189,13 +190,27 @@ update message model =
 
 
 view : Exploration -> Html Message
-view (Exploration { currentProgram, index, seen }) =
+view (Exploration { currentProgram, index, seen, show }) =
+    let
+        v =
+            intView show
+    in
     Html.div []
         [ viewControls
-        , viewProgram currentProgram
-        , viewIntermediate index currentProgram
-        , viewSeen seen
+        , viewProgram v currentProgram
+        , viewIntermediate v index currentProgram
+        , viewSeen v seen
         ]
+
+
+intView : Show -> Int -> Html msg
+intView show n =
+    case show of
+        Fractional ->
+            Prime.view n
+
+        Integral ->
+            Html.span [] [ Html.text <| String.fromInt n ]
 
 
 viewControls : Html Message
@@ -206,19 +221,19 @@ viewControls =
         ]
 
 
-viewIntermediate : Maybe Int -> Program -> Html msg
-viewIntermediate i p =
+viewIntermediate : (Int -> Html msg) -> Maybe Int -> Program -> Html msg
+viewIntermediate v i p =
     case (Maybe.andThen <| swap nthFraction p) i of
         Nothing ->
             Html.div [] []
 
         Just f ->
             Html.div [ Attribute.css [ displayFlex, flexDirection row, flexWrap noWrap, justifyContent flexStart, alignItems center ] ]
-                [ Html.span [] [ Html.text <| String.fromInt <| number p ]
+                [ v <| number p
                 , Html.span [] [ Html.text <| "⨉" ]
-                , Rational.view f
+                , Rational.view v f
                 , Html.span [ Attribute.css [ marginLeft <| em 0.5, marginRight <| em 0.5 ] ] [ Html.text <| "=" ]
-                , Rational.view <| Rational.multiply f <| Rational.fromInt <| number p
+                , Rational.view v <| Rational.multiply f <| Rational.fromInt <| number p
                 ]
 
 
@@ -234,31 +249,28 @@ nthFraction i (Program { fs }) =
         |> List.head
 
 
-viewProgram : Program -> Html Message
-viewProgram (Program { n, fs }) =
+viewProgram : (Int -> Html msg) -> Program -> Html msg
+viewProgram v (Program { n, fs }) =
     let
         comma =
             Html.span [] [ Html.text "," ]
 
         fractions =
             fs
-                |> List.map Rational.view
+                |> List.map (Rational.view v)
                 |> List.intersperse comma
     in
     Html.div [ Attribute.css [ display inlineFlex, flexDirection row, flexWrap noWrap, justifyContent flexStart, alignItems center ] ]
-        [ Html.span [] [ Html.text <| String.fromInt n ]
+        [ v n
         , Html.div [ Attribute.css [ display inlineFlex, flexDirection row, flexWrap noWrap, justifyContent flexStart, alignItems center ] ] fractions
         ]
 
 
-viewSeen : List Int -> Html msg
-viewSeen ns =
+viewSeen : (Int -> Html msg) -> List Int -> Html msg
+viewSeen viewNumber ns =
     let
         comma =
             Html.span [] [ Html.text "," ]
-
-        viewNumber m =
-            Html.span [] [ Html.text <| String.fromInt m ]
 
         numbers =
             ns

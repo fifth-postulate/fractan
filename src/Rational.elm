@@ -133,28 +133,28 @@ type Error
     | NotAnFraction
 
 
-view : Fraction -> Html msg
-view f =
+view : (Int -> Html msg) -> Fraction -> Html msg
+view v f =
     if integer f then
-        viewInteger f
+        viewInteger v f
 
     else
-        viewFraction f
+        viewFraction v f
 
 
-viewFraction : Fraction -> Html msg
-viewFraction (Fraction { numerator, denominator }) =
+viewFraction : (Int -> Html msg) -> Fraction -> Html msg
+viewFraction v (Fraction { numerator, denominator }) =
     Html.div [ Attribute.css [ fractionStyle ] ]
-        [ Html.span [] [ Html.text <| String.fromInt numerator ]
+        [ v numerator
         , Html.hr [ Attribute.css [ width (pct 100) ] ] []
-        , Html.span [] [ Html.text <| String.fromInt denominator ]
+        , v denominator
         ]
 
 
-viewInteger : Fraction -> Html msg
-viewInteger (Fraction { numerator }) =
+viewInteger : (Int -> Html msg) -> Fraction -> Html msg
+viewInteger v (Fraction { numerator }) =
     Html.div [ Attribute.css [ fractionStyle ] ]
-        [ Html.span [] [ Html.text <| String.fromInt numerator ]
+        [ v numerator
         ]
 
 

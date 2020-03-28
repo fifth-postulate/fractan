@@ -1,4 +1,4 @@
-module Prime exposing (collect, factors)
+module Prime exposing (collect, factors, view)
 
 import Browser
 import Css exposing (..)
@@ -36,7 +36,7 @@ update _ model =
     ( model, Cmd.none )
 
 
-view : Model -> Html Message
+view : Model -> Html msg
 view model =
     let
         times =
@@ -52,7 +52,7 @@ view model =
     Html.div [] content
 
 
-viewPrimePower : ( Int, Int ) -> Html Message
+viewPrimePower : ( Int, Int ) -> Html msg
 viewPrimePower ( base, exponent ) =
     if exponent == 1 then
         Html.span [] [ Html.text <| String.fromInt base ]

@@ -80,6 +80,21 @@ class: middle, center
 ---
 class: middle, center
 
-.sieve[
-    50
-]
+2<sup>2</sup>, 3<sup>1</sup>, 5<sup>1</sup>, 7<sup>0</sup>, 11<sup>0</sup>, 13<sup>0</sup>, 17<sup>0</sup>, 19<sup>0</sup>, ...
+
+---
+class: middle, center
+
+2<sub>2</sub>, 1<sub>3</sub>, 1<sub>5</sub>, 0<sub>7</sub>, 0<sub>11</sub>, 0<sub>13</sub>, 0<sub>17</sub>, 0<sub>19</sub>, ...
+
+---
+
+## First Insight
+
+> The state of a Fractan program is a bank of registers
+>
+> Each register holds a non-negative number
+>
+> Each register is indexed by a prime number
+>
+> There are only finite number of non-zero registers at each moment

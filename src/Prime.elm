@@ -40,7 +40,7 @@ view : Model -> Html msg
 view model =
     let
         times =
-            Html.span [] [ Html.text "⨉" ]
+            Html.span [] [ Html.text "·" ]
 
         content =
             model

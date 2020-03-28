@@ -12,11 +12,11 @@ suite : Test
 suite =
     describe "Fractan module"
         [ describe "Exploration"
-            [ test "can be decoded" <|
+            [ test "can be decoded with showing integers" <|
                 \_ ->
                     let
                         result =
-                            Decode.decodeString Fractan.decode """{"description":{"number": 30,"fractions":["1/2","1/3","1/5"]}}"""
+                            Decode.decodeString Fractan.decode """{"description":{"show":"integral","number": 30,"fractions":["1/2","1/3","1/5"]}}"""
 
                         fractions =
                             [ fraction 1 2, fraction 1 3, fraction 1 5 ]
@@ -26,7 +26,29 @@ suite =
                             program 30 fractions
 
                         expected =
-                            Ok <| exploration p
+                            p
+                                |> exploration
+                                |> Ok
+                    in
+                    Expect.equal result expected
+            , test "can be decoded with showing factors" <|
+                \_ ->
+                    let
+                        result =
+                            Decode.decodeString Fractan.decode """{"description":{"show":"fractional","number": 30,"fractions":["1/2","1/3","1/5"]}}"""
+
+                        fractions =
+                            [ fraction 1 2, fraction 1 3, fraction 1 5 ]
+                                |> List.map (Result.withDefault Rational.zero)
+
+                        p =
+                            program 30 fractions
+
+                        expected =
+                            p
+                                |> exploration
+                                |> fractional
+                                |> Ok
                     in
                     Expect.equal result expected
             ]

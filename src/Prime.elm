@@ -52,12 +52,14 @@ view model =
     Html.div [] content
 
 
-viewPrimePower : (Int, Int) -> Html Message
-viewPrimePower (base, exponent) =
+viewPrimePower : ( Int, Int ) -> Html Message
+viewPrimePower ( base, exponent ) =
     if exponent == 1 then
         Html.span [] [ Html.text <| String.fromInt base ]
+
     else
         Html.span [] [ Html.text <| String.fromInt base, Html.sup [] [ Html.text <| String.fromInt exponent ] ]
+
 
 factors : Int -> List Int
 factors n =

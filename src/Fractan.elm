@@ -30,6 +30,7 @@ init flags =
 
         default =
             exploration p
+                |> fractional
 
         e =
             flags
@@ -52,6 +53,7 @@ type Exploration
         { currentProgram : Program
         , index : Maybe Int
         , seen : List Int
+        , show : Show
         }
 
 
@@ -61,7 +63,18 @@ exploration p =
         { currentProgram = p
         , index = Nothing
         , seen = [ number p ]
+        , show = Integral
         }
+
+
+fractional : Exploration -> Exploration
+fractional (Exploration e) =
+    Exploration { e | show = Fractional }
+
+
+integral : Exploration -> Exploration
+integral (Exploration e) =
+    Exploration { e | show = Integral }
 
 
 microStep : Exploration -> Exploration
@@ -88,7 +101,7 @@ microStep ((Exploration ({ currentProgram, index, seen } as data)) as e) =
 
 
 macroStep : Exploration -> Exploration
-macroStep ((Exploration { currentProgram, seen }) as e) =
+macroStep ((Exploration ({ currentProgram, seen } as data)) as e) =
     if finished currentProgram then
         e
 
@@ -104,7 +117,7 @@ macroStep ((Exploration { currentProgram, seen }) as e) =
                 else
                     number nextProgram :: seen
         in
-        Exploration { currentProgram = nextProgram, index = Nothing, seen = nextSeen }
+        Exploration { data | currentProgram = nextProgram, index = Nothing, seen = nextSeen }
 
 
 type Program
@@ -153,6 +166,11 @@ finished (Program { isFinished }) =
 number : Program -> Int
 number (Program { n }) =
     n
+
+
+type Show
+    = Integral
+    | Fractional
 
 
 type Message
@@ -257,8 +275,39 @@ subscriptions _ =
 
 decode : Decoder Exploration
 decode =
+    Decode.at [ "description", "show" ] decodeShow
+        |> Decode.andThen decodeDescription
+
+
+decodeShow : Decoder Show
+decodeShow =
+    Decode.map toShow Decode.string
+
+
+toShow : String -> Show
+toShow input =
+    case input of
+        "fractional" ->
+            Fractional
+
+        _ ->
+            Integral
+
+
+decodeDescription : Show -> Decoder Exploration
+decodeDescription show =
+    let
+        mapper e =
+            case show of
+                Fractional ->
+                    fractional e
+
+                Integral ->
+                    integral e
+    in
     Decode.map exploration
         (Decode.field "description" decodeProgram)
+        |> Decode.map mapper
 
 
 decodeProgram : Decoder Program

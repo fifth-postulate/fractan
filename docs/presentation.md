@@ -6,6 +6,7 @@ class: middle, center
 class: middle, center
 
 .fractan[{
+    "show": "integral",
     "number": 2,
     "fractions": [
         "17/91",
@@ -98,3 +99,21 @@ class: middle, center
 > Each register is indexed by a prime number
 >
 > There are only finite number of non-zero registers at each moment
+
+---
+class: middle, center
+
+.fractan[{
+    "show": "fractional",
+    "number": 18,
+    "fractions": [
+        "143/14",
+        "7/13",
+        "17/7",
+        "38/221",
+        "17/19",
+        "7/3",
+        "1/2"
+   ]
+}]
+

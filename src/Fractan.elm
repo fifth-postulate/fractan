@@ -8,6 +8,7 @@ import Html.Styled.Events as Event
 import Json.Decode as Decode exposing (Decoder, Value)
 import Prime
 import Rational exposing (Fraction, fraction)
+import Show exposing (Show(..))
 
 
 main =
@@ -169,11 +170,6 @@ number (Program { n }) =
     n
 
 
-type Show
-    = Integral
-    | Fractional
-
-
 type Message
     = MicroStep
     | MacroStep
@@ -287,23 +283,8 @@ subscriptions _ =
 
 decode : Decoder Exploration
 decode =
-    Decode.at [ "description", "show" ] decodeShow
+    Decode.at [ "description", "show" ] Show.decode
         |> Decode.andThen decodeDescription
-
-
-decodeShow : Decoder Show
-decodeShow =
-    Decode.map toShow Decode.string
-
-
-toShow : String -> Show
-toShow input =
-    case input of
-        "fractional" ->
-            Fractional
-
-        _ ->
-            Integral
 
 
 decodeDescription : Show -> Decoder Exploration

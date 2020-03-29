@@ -3,6 +3,7 @@ module Prime exposing (collect, factors, view)
 import Browser
 import Css exposing (..)
 import Html.Styled as Html exposing (Html, toUnstyled)
+import Html.Styled.Attributes as Attribute
 
 
 main =
@@ -22,16 +23,12 @@ type alias Model =
     Int
 
 
-init : Flags -> ( Model, Cmd Message )
+init : Flags -> ( Model, Cmd msg )
 init flags =
     ( flags, Cmd.none )
 
 
-type Message
-    = DoNothing
-
-
-update : Message -> Model -> ( Model, Cmd Message )
+update : msg -> Model -> ( Model, Cmd msg )
 update _ model =
     ( model, Cmd.none )
 
@@ -49,7 +46,7 @@ view model =
                 |> List.map viewPrimePower
                 |> List.intersperse times
     in
-    Html.div [] content
+    Html.div [ Attribute.css [ display inlineFlex, flexDirection row, flexWrap noWrap, justifyContent flexStart, alignItems center ] ] content
 
 
 viewPrimePower : ( Int, Int ) -> Html msg

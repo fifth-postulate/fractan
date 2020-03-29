@@ -1,15 +1,45 @@
 module Rational exposing (Error(..), Fraction, add, decode, divide, fraction, fromInt, integer, multiply, one, parse, subtract, toInt, view, zero)
 
+import Browser
 import Css exposing (..)
 import Gcd exposing (gcd)
-import Html.Styled as Html exposing (Html)
+import Html.Styled as Html exposing (Html, toUnstyled)
 import Html.Styled.Attributes as Attribute
-import Json.Decode as Decode exposing (Decoder)
+import Json.Decode as Decode exposing (Decoder, Value)
+import Prime
 import Sign exposing (sign)
+
+
+main =
+    Browser.element
+        { init = init
+        , view = toUnstyled << view Prime.view
+        , update = update
+        , subscriptions = subscriptions
+        }
+
+
+type alias Flags =
+    Value
+
+
+type alias Model =
+    Fraction
 
 
 type Fraction
     = Fraction { numerator : Int, denominator : Int }
+
+
+init : Flags -> ( Model, Cmd msg )
+init flags =
+    let
+        f =
+            flags
+                |> Decode.decodeValue decodeFlags
+                |> Result.withDefault one
+    in
+    ( f, Cmd.none )
 
 
 one : Fraction
@@ -133,6 +163,11 @@ type Error
     | NotAnFraction
 
 
+update : msg -> Model -> ( Model, Cmd msg )
+update _ model =
+    ( model, Cmd.none )
+
+
 view : (Int -> Html msg) -> Fraction -> Html msg
 view v f =
     if integer f then
@@ -161,6 +196,13 @@ viewInteger v (Fraction { numerator }) =
 fractionStyle : Style
 fractionStyle =
     Css.batch [ display inlineFlex, flexDirection column, flexWrap noWrap, justifyContent center, alignItems center ]
+
+
+decodeFlags : Decoder Fraction
+decodeFlags =
+    Decode.map2 safe_fraction
+        (Decode.field "numerator" Decode.int)
+        (Decode.field "denominator" Decode.int)
 
 
 decode : Decoder Fraction
@@ -197,3 +239,8 @@ toFraction input =
 
         _ ->
             Err ToManyParts
+
+
+subscriptions : Model -> Sub msg
+subscriptions _ =
+    Sub.none

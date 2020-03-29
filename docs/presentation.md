@@ -103,6 +103,14 @@ class: middle, center
 ---
 class: middle, center
 
+.fraction[{
+    "numerator": 1,
+    "denominator": 2
+}]
+
+---
+class: middle, center
+
 .fractan[{
     "show": "fractional",
     "number": 693,

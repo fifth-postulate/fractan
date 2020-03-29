@@ -19,6 +19,14 @@
         flags: flags
       });
     });
+
+    turn('fraction').into(function(container, source){
+      let flags = JSON.parse(source);
+      let app = Elm.Rational.init({
+        node: container,
+        flags: flags
+      });
+    });
   }));
 
   function once(callback){

@@ -223,9 +223,39 @@ class: middle, center
 </table>
 
 ---
+
+## Infinitude of the primes
+
+> There are an infinite number of primes
+
+--
+
+\\(p_1, p_2, \ldots, p_k\\) e.g. \\(2, 3, 5\\)
+
+--
+
+\\(p_1 \cdot p_2 \cdot \ldots \cdot p_k + 1\\) e.g. \\(2 \cdot 3 \cdot 5 + 1 = 31\\)
+
+--
+
+This number has a prime divisor \\(q\\) that differs from the known primes. E.g. \\(31\\)
+
+---
 class: middle, center
 
 2, 3, 5, 7, 11, 13, 17, 19, ...
+
+---
+class: middle, center
+
+60
+
+---
+class: middle, center
+
+.factors[
+    60
+]
 
 ---
 class: middle, center

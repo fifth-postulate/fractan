@@ -284,7 +284,8 @@ class: middle, center
 
 .fraction[{
     "numerator": 1,
-    "denominator": 2
+    "denominator": 6,
+    "show": "fractional"
 }]
 
 ---

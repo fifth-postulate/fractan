@@ -7,13 +7,14 @@ import Html.Styled as Html exposing (Html, toUnstyled)
 import Html.Styled.Attributes as Attribute
 import Json.Decode as Decode exposing (Decoder, Value)
 import Prime
+import Show exposing (Show(..))
 import Sign exposing (sign)
 
 
 main =
     Browser.element
         { init = init
-        , view = toUnstyled << view Prime.view
+        , view = toUnstyled << internalView
         , update = update
         , subscriptions = subscriptions
         }
@@ -24,7 +25,14 @@ type alias Flags =
 
 
 type alias Model =
-    Fraction
+    { f : Fraction
+    , show : Show
+    }
+
+
+toModel : Show -> Int -> Int -> Model
+toModel show numerator denominator =
+    { show = show, f = safe_fraction numerator denominator }
 
 
 type Fraction
@@ -34,12 +42,15 @@ type Fraction
 init : Flags -> ( Model, Cmd msg )
 init flags =
     let
-        f =
+        d =
+            { show = Integral, f = one }
+
+        m =
             flags
                 |> Decode.decodeValue decodeFlags
-                |> Result.withDefault one
+                |> Result.withDefault d
     in
-    ( f, Cmd.none )
+    ( m, Cmd.none )
 
 
 one : Fraction
@@ -168,6 +179,20 @@ update _ model =
     ( model, Cmd.none )
 
 
+internalView : Model -> Html msg
+internalView model =
+    let
+        v =
+            case model.show of
+                Fractional ->
+                    Prime.view
+
+                Integral ->
+                    \n -> Html.span [] [ Html.text <| String.fromInt n ]
+    in
+    view v model.f
+
+
 view : (Int -> Html msg) -> Fraction -> Html msg
 view v f =
     if integer f then
@@ -198,9 +223,10 @@ fractionStyle =
     Css.batch [ display inlineFlex, flexDirection column, flexWrap noWrap, justifyContent center, alignItems center ]
 
 
-decodeFlags : Decoder Fraction
+decodeFlags : Decoder Model
 decodeFlags =
-    Decode.map2 safe_fraction
+    Decode.map3 toModel
+        (Decode.field "show" Show.decode)
         (Decode.field "numerator" Decode.int)
         (Decode.field "denominator" Decode.int)
 

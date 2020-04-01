@@ -184,7 +184,7 @@ internalView model =
     let
         v =
             case model.show of
-                Fractional ->
+                Factors ->
                     Prime.view
 
                 Integral ->

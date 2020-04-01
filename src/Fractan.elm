@@ -32,7 +32,7 @@ init flags =
 
         default =
             exploration p
-                |> fractional
+                |> primeFactors
 
         e =
             flags
@@ -69,9 +69,9 @@ exploration p =
         }
 
 
-fractional : Exploration -> Exploration
-fractional (Exploration e) =
-    Exploration { e | show = Fractional }
+primeFactors : Exploration -> Exploration
+primeFactors (Exploration e) =
+    Exploration { e | show = Factors }
 
 
 integral : Exploration -> Exploration
@@ -202,7 +202,7 @@ view (Exploration { currentProgram, index, seen, show }) =
 intView : Show -> Int -> Html msg
 intView show n =
     case show of
-        Fractional ->
+        Factors ->
             Prime.view n
 
         Integral ->
@@ -292,8 +292,8 @@ decodeDescription show =
     let
         mapper e =
             case show of
-                Fractional ->
-                    fractional e
+                Factors ->
+                    primeFactors e
 
                 Integral ->
                     integral e

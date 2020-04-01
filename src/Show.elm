@@ -5,7 +5,7 @@ import Json.Decode as Decode exposing (Decoder)
 
 type Show
     = Integral
-    | Fractional
+    | Factors
 
 
 decode : Decoder Show
@@ -16,8 +16,8 @@ decode =
 toShow : String -> Show
 toShow input =
     case input of
-        "fractional" ->
-            Fractional
+        "factors" ->
+            Factors
 
         _ ->
             Integral

@@ -283,16 +283,25 @@ class: middle, center
 class: middle, center
 
 .fraction[{
-    "numerator": 1,
-    "denominator": 6,
-    "show": "fractional"
+    "show": "intregral",
+    "numerator": 14,
+    "denominator": 15
+}]
+
+---
+class: middle, center
+
+.fraction[{
+    "show": "factors",
+    "numerator": 14,
+    "denominator": 15
 }]
 
 ---
 class: middle, center
 
 .fractan[{
-    "show": "fractional",
+    "show": "factors",
     "number": 693,
     "fractions": [
         "13/77",

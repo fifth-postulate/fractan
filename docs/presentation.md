@@ -300,6 +300,40 @@ class: middle, center
 ---
 class: middle, center
 
+\\[
+\frac{k\cdot p}{k\cdot q} = \frac{p}{q}
+\\]
+
+---
+class: middle, center
+
+if \\(m < n\\)
+
+\\[
+\frac{p^m}{p^n} = \frac{1}{p^{n-m}}
+\\]
+
+---
+class: middle, center
+
+if \\(m > n\\)
+
+\\[
+\frac{p^m}{p^n} = p^{m-n}
+\\]
+
+---
+class: middle, center
+
+if \\(m = n\\)
+
+\\[
+\frac{p^m}{p^n} = 1 
+\\]
+
+---
+class: middle, center
+
 .fractan[{
     "show": "factors",
     "number": 693,

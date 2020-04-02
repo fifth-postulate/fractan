@@ -275,7 +275,7 @@ viewProgram v (Program { n, fs }) =
     in
     Html.div [ Attribute.css [ display inlineFlex, flexDirection row, flexWrap noWrap, justifyContent flexStart, alignItems center ] ]
         [ v n
-        , Html.div [ Attribute.css [ display inlineFlex, flexDirection row, flexWrap noWrap, justifyContent flexStart, alignItems center ] ] fractions
+        , Html.div [ Attribute.css [ marginLeft (em 1), display inlineFlex, flexDirection row, flexWrap noWrap, justifyContent flexStart, alignItems center ] ] fractions
         ]
 
 

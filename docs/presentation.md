@@ -457,6 +457,36 @@ class: middle, center
 
 .fractan[{
     "show": "factors",
+    "number": 56,
+    "fractions": [
+        "165/14",
+        "7/11",
+        "1/7",
+        "2/5"
+   ]
+}]
+
+???
+
+## Copy register
+
+---
+
+## Third Insight
+
+> We can use **sentinals** to turn computations on or off
+
+---
+background-image: url(image/multiplication.png)
+class: middle, center
+
+## Program Construction
+
+---
+class: middle, center
+
+.fractan[{
+    "show": "factors",
     "number": 693,
     "fractions": [
         "13/77",

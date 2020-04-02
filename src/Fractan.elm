@@ -53,6 +53,7 @@ type alias Model =
 type Exploration
     = Exploration
         { currentProgram : Program
+        , originalState : Int
         , index : Maybe Int
         , seen : List Int
         , show : Show
@@ -63,10 +64,16 @@ exploration : Program -> Exploration
 exploration p =
     Exploration
         { currentProgram = p
+        , originalState = number p
         , index = Nothing
         , seen = [ number p ]
         , show = Integral
         }
+
+
+reset : Exploration -> Exploration
+reset (Exploration ({ currentProgram, originalState } as e)) =
+    Exploration { e | currentProgram = currentProgram |> withNumber originalState, index = Nothing, seen = [ originalState ] }
 
 
 primeFactors : Exploration -> Exploration
@@ -170,14 +177,23 @@ number (Program { n }) =
     n
 
 
+withNumber : Int -> Program -> Program
+withNumber n (Program p) =
+    Program { p | n = n, isFinished = False }
+
+
 type Message
-    = MicroStep
+    = Reset
+    | MicroStep
     | MacroStep
 
 
 update : Message -> Model -> ( Model, Cmd Message )
 update message model =
     case message of
+        Reset ->
+            ( reset model, Cmd.none )
+
         MicroStep ->
             ( microStep model, Cmd.none )
 
@@ -212,8 +228,9 @@ intView show n =
 viewControls : Html Message
 viewControls =
     Html.div []
-        [ Html.button [ Event.onClick MicroStep ] [ Html.text "." ]
-        , Html.button [ Event.onClick MacroStep ] [ Html.text ">" ]
+        [ Html.button [ Event.onClick Reset ] [ Html.text "↻" ]
+        , Html.button [ Event.onClick MicroStep ] [ Html.text "→" ]
+        , Html.button [ Event.onClick MacroStep ] [ Html.text "↲" ]
         ]
 
 

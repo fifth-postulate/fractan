@@ -392,7 +392,7 @@ class: middle, center
 
 ## addition 
 
-adds \\(r_2\\) and \\(r_3\\), result in \\(r_7\\)
+adds \\(r_2\\) and \\(r_3\\), result in \\(r_5\\)
 
 ---
 class: middle, center
@@ -418,7 +418,7 @@ class: middle, center
 
 .fractan[{
     "show": "factors",
-    "number": 128,
+    "number": 256,
     "fractions": [
         "3/8",
         "5/2"
@@ -430,6 +430,27 @@ class: middle, center
 ## division with remainder
 
 For a number n find n = 3*q + r 
+
+---
+class: middle, center
+
+### copy a register?
+
+---
+class: middle, center
+
+.fractan[{
+    "show": "factors",
+    "number": 8,
+    "fractions": [
+        "15/2",
+        "2/5"
+   ]
+}]
+
+???
+
+## Broken copy register
 
 ---
 class: middle, center

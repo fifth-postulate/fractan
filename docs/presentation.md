@@ -332,6 +332,106 @@ if \\(m = n\\)
 \\]
 
 ---
+
+## Second Insight
+
+> Each instruction of a Fractan program operates on the bank of registers
+>
+> an instruction 
+>
+> * **subtracts** the prime exponents in the _denominator_ from the corresponding prime exponents of the state
+> * **adds** the prime exponents in the _numerator_ to the corresponding prime exponents of the state
+
+---
+class: middle, center
+
+.fractan[{
+    "show": "factors",
+    "number": 32,
+    "fractions": [
+        "1/2"
+   ]
+}]
+
+???
+
+## zero a register
+
+zeroes \\(r_2\\)
+
+---
+class: middle, center
+
+.fractan[{
+    "show": "factors",
+    "number": 32,
+    "fractions": [
+        "3/2"
+   ]
+}]
+
+???
+
+## move a register
+
+moves \\(r_2\\) to \\(r_3\\)
+
+---
+class: middle, center
+
+.fractan[{
+    "show": "factors",
+    "number": 72,
+    "fractions": [
+        "5/2",
+        "5/3"
+   ]
+}]
+
+???
+
+## addition 
+
+adds \\(r_2\\) and \\(r_3\\), result in \\(r_7\\)
+
+---
+class: middle, center
+
+.fractan[{
+    "show": "factors",
+    "number": 128,
+    "fractions": [
+        "1/8"
+   ]
+}]
+
+???
+
+## divisibility
+
+Decide if a number n is divisible by three
+
+1 if it is
+
+---
+class: middle, center
+
+.fractan[{
+    "show": "factors",
+    "number": 128,
+    "fractions": [
+        "3/8",
+        "5/2"
+   ]
+}]
+
+???
+
+## division with remainder
+
+For a number n find n = 3*q + r 
+
+---
 class: middle, center
 
 .fractan[{

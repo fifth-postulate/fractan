@@ -27,8 +27,7 @@ class: middle, center
 }]
 
 ---
-
-## John H Conway
+background-image: url(image/conway.jpeg)
 
 ---
 
@@ -487,13 +486,13 @@ class: middle, center
 
 .fractan[{
     "show": "factors",
-    "number": 693,
+    "number": 1188,
     "fractions": [
-        "13/77",
-        "170/39",
+        "13/22",
+        "595/39",
         "13/17",
         "19/13",
-        "69/95",
+        "69/133",
         "19/23",
         "11/19"
    ]

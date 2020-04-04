@@ -1,4 +1,4 @@
-module Rational exposing (Error(..), Fraction, add, decode, divide, fraction, fromInt, integer, multiply, one, parse, subtract, toInt, view, zero)
+module Rational exposing (Error(..), Fraction, add, decode, divide, fraction, fromInt, integer, multiply, one, parse, subtract, toInt, toString, view, zero)
 
 import Browser
 import Css exposing (..)
@@ -265,6 +265,13 @@ toFraction input =
 
         _ ->
             Err ToManyParts
+
+
+toString : Fraction -> String
+toString (Fraction { numerator, denominator }) =
+    [ numerator, denominator ]
+        |> List.map String.fromInt
+        |> String.join "/"
 
 
 subscriptions : Model -> Sub msg

@@ -23,12 +23,12 @@ main =
 init : Flags -> ( Model, Cmd Message )
 init flags =
     let
-        fractions =
+        fs =
             [ fraction 1 2 ]
                 |> List.map (Result.withDefault Rational.zero)
 
         p =
-            program 2 fractions
+            program 2 fs
 
         default =
             exploration p
@@ -129,6 +129,15 @@ macroStep ((Exploration ({ currentProgram, seen } as data)) as e) =
         Exploration { data | currentProgram = nextProgram, index = Nothing, seen = nextSeen }
 
 
+state : Exploration -> Int
+state (Exploration { currentProgram }) =
+    number currentProgram
+
+
+instructions : Exploration -> List Fraction 
+instructions (Exploration { currentProgram }) =
+    fractions currentProgram
+
 type Program
     = Program { n : Int, fs : List Fraction, isFinished : Bool }
 
@@ -181,6 +190,9 @@ withNumber : Int -> Program -> Program
 withNumber n (Program p) =
     Program { p | n = n, isFinished = False }
 
+fractions : Program -> List Fraction
+fractions (Program { fs }) =
+    fs
 
 type Message
     = Reset
@@ -268,14 +280,14 @@ viewProgram v (Program { n, fs }) =
         comma =
             Html.span [] [ Html.text "," ]
 
-        fractions =
+        viewFractions =
             fs
                 |> List.map (Rational.view v)
                 |> List.intersperse comma
     in
     Html.div [ Attribute.css [ display inlineFlex, flexDirection row, flexWrap noWrap, justifyContent flexStart, alignItems center ] ]
         [ v n
-        , Html.div [ Attribute.css [ marginLeft (em 1), display inlineFlex, flexDirection row, flexWrap noWrap, justifyContent flexStart, alignItems center ] ] fractions
+        , Html.div [ Attribute.css [ marginLeft (em 1), display inlineFlex, flexDirection row, flexWrap noWrap, justifyContent flexStart, alignItems center ] ] viewFractions
         ]
 
 

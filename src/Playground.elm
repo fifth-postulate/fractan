@@ -31,8 +31,13 @@ init _ =
         p =
             Fractan.program 2 fractions
 
+        pr =
+            fractions
+                |> List.map Rational.toString
+                |> String.join ","
+
         model =
-            { exploration = Fractan.exploration p, problem = Nothing }
+            { exploration = Fractan.exploration p, problem = Nothing, proto = pr }
     in
     ( model, Cmd.none )
 
@@ -40,12 +45,15 @@ init _ =
 type alias Model =
     { exploration : Exploration
     , problem : Maybe String
+    , proto : String
     }
 
 
 type Message
     = Machine Fractan.Message
     | ChangeState String
+    | UpdateProto String
+    | ChangeInstructions
 
 
 update : Message -> Model -> ( Model, Cmd Message )
@@ -73,6 +81,52 @@ update message model =
             in
             ( nextModel, Cmd.none )
 
+        UpdateProto input ->
+            ( { model | proto = input }, Cmd.none )
+
+        ChangeInstructions ->
+            let
+                state =
+                    parseFractions model.proto
+
+                nextModel =
+                    case state of
+                        Just fs ->
+                            { model | exploration = model.exploration |> Fractan.withInstructions fs, problem = Nothing }
+
+                        Nothing ->
+                            { model | problem = Just <| "\"" ++ model.proto ++ "\" is not a list of fractions" }
+            in
+            ( nextModel, Cmd.none )
+
+
+parseFractions : String -> Maybe (List Fraction)
+parseFractions input =
+    let
+        attempt =
+            input
+                |> String.split ","
+                |> List.map Rational.parse
+
+        isError r =
+            case r of
+                Ok _ ->
+                    False
+
+                Err _ ->
+                    True
+
+        result =
+            if List.any isError attempt then
+                Nothing
+
+            else
+                attempt
+                    |> List.map (Result.withDefault Rational.zero)
+                    |> Just
+    in
+    result
+
 
 view : Model -> Html Message
 view model =
@@ -98,14 +152,11 @@ viewControls model =
                 |> String.fromInt
 
         defaultInstructions =
-            model.exploration
-                |> Fractan.instructions
-                |> List.map Rational.toString
-                |> String.join ", "
+            model.proto
     in
     Html.div []
         [ Html.input [ Attribute.placeholder "State", Attribute.value defaultState, Event.onInput ChangeState ] []
-        , Html.input [ Attribute.placeholder "Instructions", Attribute.value defaultInstructions ] []
+        , Html.input [ Attribute.placeholder "Instructions", Attribute.value defaultInstructions, Event.onInput UpdateProto, Event.onBlur ChangeInstructions ] []
         ]
 
 
@@ -114,10 +165,11 @@ viewProblem problem =
     let
         content =
             problem
-            |> Maybe.map (\s -> [ Html.text s])
-            |> Maybe.withDefault []
+                |> Maybe.map (\s -> [ Html.text s ])
+                |> Maybe.withDefault []
     in
-        Html.div [] content
+    Html.div [] content
+
 
 subscriptions : Model -> Sub Message
 subscriptions _ =

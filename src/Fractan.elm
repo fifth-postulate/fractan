@@ -133,13 +133,20 @@ state : Exploration -> Int
 state (Exploration { currentProgram }) =
     number currentProgram
 
+
 withState : Int -> Exploration -> Exploration
 withState n (Exploration e) =
-    Exploration {e | currentProgram = e.currentProgram |> withNumber n, index = Nothing, seen = [n]}
+    Exploration { e | currentProgram = e.currentProgram |> withNumber n, originalState = n, index = Nothing, seen = [ n ] }
+
 
 instructions : Exploration -> List Fraction
 instructions (Exploration { currentProgram }) =
     fractions currentProgram
+
+
+withInstructions : List Fraction -> Exploration -> Exploration
+withInstructions fs (Exploration e) =
+    Exploration { e | currentProgram = e.currentProgram |> withFractions fs, index = Nothing, seen = [ e.originalState ] }
 
 
 type Program
@@ -198,6 +205,11 @@ withNumber n (Program p) =
 fractions : Program -> List Fraction
 fractions (Program { fs }) =
     fs
+
+
+withFractions : List Fraction -> Program -> Program
+withFractions fs (Program p) =
+    Program { p | fs = fs }
 
 
 type Message

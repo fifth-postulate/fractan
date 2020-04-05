@@ -84,6 +84,7 @@ view model =
     in
     Html.div []
         [ viewControls model
+        , viewProblem model.problem
         , e
         ]
 
@@ -107,6 +108,16 @@ viewControls model =
         , Html.input [ Attribute.placeholder "Instructions", Attribute.value defaultInstructions ] []
         ]
 
+
+viewProblem : Maybe String -> Html Message
+viewProblem problem =
+    let
+        content =
+            problem
+            |> Maybe.map (\s -> [ Html.text s])
+            |> Maybe.withDefault []
+    in
+        Html.div [] content
 
 subscriptions : Model -> Sub Message
 subscriptions _ =

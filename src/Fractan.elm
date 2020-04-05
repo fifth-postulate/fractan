@@ -133,10 +133,14 @@ state : Exploration -> Int
 state (Exploration { currentProgram }) =
     number currentProgram
 
+withState : Int -> Exploration -> Exploration
+withState n (Exploration e) =
+    Exploration {e | currentProgram = e.currentProgram |> withNumber n, index = Nothing, seen = [n]}
 
-instructions : Exploration -> List Fraction 
+instructions : Exploration -> List Fraction
 instructions (Exploration { currentProgram }) =
     fractions currentProgram
+
 
 type Program
     = Program { n : Int, fs : List Fraction, isFinished : Bool }
@@ -190,9 +194,11 @@ withNumber : Int -> Program -> Program
 withNumber n (Program p) =
     Program { p | n = n, isFinished = False }
 
+
 fractions : Program -> List Fraction
 fractions (Program { fs }) =
     fs
+
 
 type Message
     = Reset

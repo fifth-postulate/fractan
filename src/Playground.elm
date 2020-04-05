@@ -32,18 +32,20 @@ init _ =
             Fractan.program 2 fractions
 
         model =
-            { exploration = Fractan.exploration p }
+            { exploration = Fractan.exploration p, problem = Nothing }
     in
     ( model, Cmd.none )
 
 
 type alias Model =
-    { exploration : Exploration }
+    { exploration : Exploration
+    , problem : Maybe String
+    }
 
 
 type Message
     = Machine Fractan.Message
-    | Load
+    | ChangeState String
 
 
 update : Message -> Model -> ( Model, Cmd Message )
@@ -56,8 +58,20 @@ update message model =
             in
             ( { model | exploration = exploration }, Cmd.none )
 
-        Load ->
-            ( model, Cmd.none )
+        ChangeState input ->
+            let
+                state =
+                    String.toInt input
+
+                nextModel =
+                    case state of
+                        Just n ->
+                            { model | exploration = model.exploration |> Fractan.withState n, problem = Nothing }
+
+                        Nothing ->
+                            { model | problem = Just <| "\"" ++ input ++ "\" is not a number" }
+            in
+            ( nextModel, Cmd.none )
 
 
 view : Model -> Html Message
@@ -69,28 +83,28 @@ view model =
                 |> Html.map Machine
     in
     Html.div []
-        [ e
-        , viewControls model
+        [ viewControls model
+        , e
         ]
 
 
 viewControls : Model -> Html Message
 viewControls model =
     let
-        defaultState = 
+        defaultState =
             model.exploration
-            |> Fractan.state
-            |> String.fromInt
+                |> Fractan.state
+                |> String.fromInt
 
         defaultInstructions =
             model.exploration
-            |> Fractan.instructions
-            |> List.map Rational.toString
-            |> String.join ", "
+                |> Fractan.instructions
+                |> List.map Rational.toString
+                |> String.join ", "
     in
     Html.div []
-        [ Html.input [Attribute.placeholder defaultState ][] 
-        , Html.input [Attribute.placeholder defaultInstructions][]
+        [ Html.input [ Attribute.placeholder "State", Attribute.value defaultState, Event.onInput ChangeState ] []
+        , Html.input [ Attribute.placeholder "Instructions", Attribute.value defaultInstructions ] []
         ]
 
 

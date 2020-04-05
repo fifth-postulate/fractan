@@ -2,7 +2,7 @@
 
 SOURCE_DIR=src
 BUILD_DIR=docs/js
-MODULI=Fractan Prime Rational
+MODULI=Fractan Prime Rational Playground
 MINIFIED_TARGETS=$(MODULI:%=${BUILD_DIR}/%.min.js)
 
 all: ${MINIFIED_TARGETS}
